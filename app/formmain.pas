@@ -444,6 +444,7 @@ type
     mnuTextSep2: TMenuItem;
     mnuTextSel: TMenuItem;
     mnuTextGotoDef: TMenuItem;
+    mnuTextSepUrl: TMenuItem;
     TimerMouseStop: TTimer;
     TimerStatusWork: TTimer;
     TimerAppIdle: TIdleTimer;
@@ -8186,7 +8187,7 @@ begin
   UpdateMenuItemHotkey(mnuTextDelete, cCommand_TextDeleteSelection);
   UpdateMenuItemHotkey(mnuTextSel, cCommand_SelectAll);
   UpdateMenuItemHotkey(mnuTextGotoDef, cmd_GotoDefinition);
-  UpdateMenuItemHotkey(mnuTextOpenUrl, cmd_LinkAtCaret_Open);
+  UpdateMenuItemHotkey(mnuTextOpenUrl, cmd_LinkAtPopup_Open);
 
   Ed:= CurrentEditor;
 
@@ -8196,8 +8197,9 @@ begin
   if Assigned(mnuTextPaste) then
     mnuTextPaste.Enabled:= not Ed.ModeReadOnly and Clipboard.HasFormat(CF_Text);
 
+  //auto hide 'Delete' to make other menuitems closer to cursor
   if Assigned(mnuTextDelete) then
-    mnuTextDelete.Enabled:= not Ed.ModeReadOnly and Ed.Carets.IsSelection;
+    mnuTextDelete.Visible:= not Ed.ModeReadOnly and Ed.Carets.IsSelection;
 
   if Assigned(mnuTextUndo) then
     mnuTextUndo.Enabled:= not Ed.ModeReadOnly and (Ed.UndoCount>0);
@@ -8206,7 +8208,12 @@ begin
     mnuTextRedo.Enabled:= not Ed.ModeReadOnly and (Ed.RedoCount>0);
 
   if Assigned(mnuTextOpenUrl) then
-    mnuTextOpenUrl.Enabled:= EditorGetLinkAtCaret(Ed)<>'';
+  begin
+    //'Open URL' item is on top, so auto hide it
+    mnuTextOpenUrl.Visible:= EditorGetLinkAtScreenCoord(Ed, PopupText.PopupPoint)<>'';
+    if Assigned(mnuTextSepUrl) then
+      mnuTextSepUrl.Visible:= mnuTextOpenUrl.Visible;
+  end;
 end;
 
 
