@@ -4375,11 +4375,6 @@ finalization
   FreeAndNil(AppBookmarkImagelist);
 
   AppClearPluginLists;
-  //FreeAndNil(AppTreeHelpers);
-  //FreeAndNil(AppEventList);
-  //FreeAndNil(AppCommand2List);
-  //FreeAndNil(AppCommandList);
-
   AppConsoleQueue.Push(''); // fix for #5037: Adds dummy data to avoid exception on free
   FreeAndNil(AppConsoleQueue);
   FreeAndNil(AppCommandsDelayed);
@@ -4388,7 +4383,6 @@ finalization
     FreeAndNil(AppLexersLastDetected);
 
   //AppFreeListTimers; //somehow gives crash on exit, if TerminalPlus was used, in timer_proc(TIMER_DELETE...)
-  //AppClearPluginLists;
 
   {$ifdef unix}
   if Assigned(AppUniqInst) then
